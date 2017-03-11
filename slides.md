@@ -80,7 +80,7 @@ https://github.com/chpill/cljs-weight
 
 Culmine à 3.4M de JS (1.02M avec GZIP)
 
-![circleci production js request timing](images/circleci-js-payload-firefox-devtools-network-view.png)
+![circleci production js request timing](images/circleci-js-payload-firefox-devtools-network-view-fs8.png)
 
 
 -----
@@ -89,6 +89,17 @@ Culmine à 3.4M de JS (1.02M avec GZIP)
 
 -----
 
+TODO blablabla
+
+-----
+
+### Un beau jour en production...
+
+![Un beau jour en production](images/shining-JS-fs8.png)
+
+-----
+
+![Le coupable](images/shining-u2028-fs8.png)
 
 
 -----
