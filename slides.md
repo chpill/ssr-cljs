@@ -179,13 +179,9 @@ bindings but it would be seriously nasty.
 
 -----
 
-TODO schema of the code organisation
+### Code organization
 
-Note:
-* Views and client-side routing must be in cljc files
-* Clj side: HTTP server + whatever you need
-* Cljs side: client "bootstrap" (mounting react components in the DOM, parsing the data)
-
+![code organization chart](images/code-organization-chart.png)
 
 -----
 
