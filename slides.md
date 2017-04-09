@@ -5,17 +5,6 @@
 
 -----
 
-## Who am I
-
-**Etienne Spillemaeker** - Specimen from the JS planet
-
-[github.com/chpill](https://github.com/chpill)
-
-[twitter.com/chpill_](https://twitter.com/chpill_)
-
-
------
-
 ### Some context: Single page application (SPA)
 
 Offers more interactivity than static pages
@@ -109,7 +98,7 @@ A web-app with links that work even without JS!
 
 Note:
 * First react conf, 30 january 2015
-* show the demo locally
+* Make a demo of reverboard!
 
 -----
 
@@ -286,7 +275,7 @@ First make it work without server-rendering
 
 -----
 
-Add some dummy code for the server
+Add a dummy div wrapper on the clojure-side
 
 ```
 (ns my-app.views.flip-move
@@ -322,3 +311,16 @@ React will yell at you because the server markup does not match its own
                                    children)))
 
 ```
+
+-----
+
+## Thanks for listening! Questions?
+
+### Contact infos
+
+**Etienne Spillemaeker**
+
+[github.com/chpill](https://github.com/chpill)
+
+[twitter.com/chpill_](https://twitter.com/chpill_)
+
