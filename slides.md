@@ -83,6 +83,10 @@ Targets a much harder problem: the mobile
 
 Does nothing for the very first render
 
+Note:
+PWA are a way to get some JS code to run "outside" of the context of a web page,
+that can intercept the page requests. It enables you to do caching etc...
+
 -----
 
 ## Server-side rendering (with react)
