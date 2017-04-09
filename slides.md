@@ -3,97 +3,205 @@
 # Server-Side Rendering
 <!-- <img src="images/clojure-logo.png" class="no-style"/> -->
 
+-----
+
+## Who am I
+
+**Etienne Spillemaeker** - Specimen from the JS planet
+
+[github.com/chpill](https://github.com/chpill)
+
+[twitter.com/chpill_](https://twitter.com/chpill_)
+
+
+-----
+
+### Some context: Single page application (SPA)
+
+Offers more interactivity than static pages
+
+Dynamically fetch and display content
+
+Manipulates its own **routes/URLs**
+
 Note:
-
-Plop plop plop
-plop
-
-plouf plop
+The back button works in good SPAs!
 
 -----
 
-## À propos
+### The tradeoffs
 
-Etienne Spillemaeker
+First rendering is slow:
 
-github.com/chpill
+download JS -> interpret JS (-> fetch data) -> render
 
-Originaire de la planète javascript
-
------
-
-## De quoi on parle
-
-* Une application « monopage » (SPA)
-* Avec du routage côté client (TODO FIXME: ajouter des screens de reverboard)
-
-TODO FIXME fragment et couleur pour ce dernier point?
-* Être capable de servir les mêmes routes depuis le serveur (même si JS désactivé)
+SEO is really tricky for dynamic content
 
 -----
 
-### Les tracas du « monopage » classique
+### Even worst for Clojurescript
 
+Generated JS payloads get big real fast (even with advanced optimizations and dead code elimination).
 
-Premier chargement un peu douleureux...
-
-TODO FIXME: refaire ça avec des boîtes plus jolies
-
-     télécharger JS 
-          \/
-     interpréter JS 
-          \/
-     télécharger les données 
-          \/
-     afficher l'interface
-
-Pas de SEO (en tout cas pas facile!)
-
------
-
-### Encore plus vrai pour Clojurescript
-
-Les JS générés deviennent rapidement volumineux!
-
-TODO FIXME mettre un beau picto github
-https://github.com/chpill/cljs-weight
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[chpill/cljs-weight](https://github.com/chpill/cljs-weight)
 
 
 -----
 
-|                           |   JS | GZIP |
-|---------------------------|------|------|
-| (js/alert "hello world")  |   5K |   2K |
-| 1 channel core async      | 105K |  24K |
-| 1 spec clojure.spec       | 116K |  26K |
-| routage client            | 157K |  37K |
-| 1 vue Rum                 | 270K |  72K |
-| core async et websockets  | 480K | 116K |
-|---------------------------|------|------|
-| tout ensemble             | 680K | 175K |
+|                          | JS   | GZIP |
+|--------------------------|------|------|
+| (js/alert "hello world") | 5K   | 2K   |
+| 1 core.async channel     | 105K | 24K  |
+| 1 clojure.spec spec      | 116K | 26K  |
+| client routing           | 157K | 37K  |
+| 1 Rum view               | 270K | 72K  |
+| core async + websockets  | 480K | 116K |
+|--------------------------|------|------|
+| all together             | 680K | 175K |
 
 
 -----
 
-### Cas extrême: L'application web de CircleCI
+### Extreme case: web front-end of CircleCI
 
 
-Culmine à 3.4M de JS (1.02M avec GZIP)
+Weights a staggering 3.4M of JS (1.02M when gzipped)
 
 ![circleci production js request timing](images/circleci-js-payload-firefox-devtools-network-view-fs8.png)
 
+-----
+
+## What can we do?
 
 -----
 
-# Comment ça marche?
+## Progressive web apps?
+
+Targets a much harder problem: the mobile  
+-> brings a lot of complexity
+
+Does nothing for the very first render
 
 -----
 
-TODO blablabla
+## Server-side rendering (with react)
+### A bit of history
+<!-- <h3 class="fragment">A bit of history</h1> -->
 
 -----
 
-### Un beau jour en production...
+### The react router mega demo!
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[ryanflorence/react-router-mega-demo](https://github.com/ryanflorence/react-router-mega-demo/)
+
+<svg height=60 viewBox="0 25 310 260" style="enable-background:new 0 0 310 310; vertical-align:middle;" xml:space="preserve"> <path d="M297.917,64.645c-11.19-13.302-31.85-18.728-71.306-18.728H83.386c-40.359,0-61.369,5.776-72.517,19.938   C0,79.663,0,100.008,0,128.166v53.669c0,54.551,12.896,82.248,83.386,82.248h143.226c34.216,0,53.176-4.788,65.442-16.527   C304.633,235.518,310,215.863,310,181.835v-53.669C310,98.471,309.159,78.006,297.917,64.645z M199.021,162.41l-65.038,33.991   c-1.454,0.76-3.044,1.137-4.632,1.137c-1.798,0-3.592-0.484-5.181-1.446c-2.992-1.813-4.819-5.056-4.819-8.554v-67.764   c0-3.492,1.822-6.732,4.808-8.546c2.987-1.814,6.702-1.938,9.801-0.328l65.038,33.772c3.309,1.718,5.387,5.134,5.392,8.861   C204.394,157.263,202.325,160.684,199.021,162.41z" style="fill: rgb(0, 0, 0);"></path> </svg>
+[the talk](https://www.youtube.com/watch?v=XZfvW1a8Xac)
+
+Just run your react app on a nodeJS server, easy!
+A web-app with links that work even without JS!
+
+Note:
+* First react conf, 30 january 2015
+* show the demo locally
+
+-----
+
+### In the clojure world
+
+The first attempts were... laborious
+
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[pupeno/prerenderer](https://github.com/pupeno/prerenderer)
+
+spawns a nodeJS process that runs the SPA
+
+arbitrarly decide when the page is "rendered enough" (default: 300ms)
+
+Note:
+- Apparently, nashorn is really bad, especially at startup
+- raises complexity of operations
+- you would probably need a pool of nodeJS processes to do that properly
+
+-----
+
+### Then one day at the conj 2015...
+
+<img width=300 alt="arohner avatar" src="images/arohner-avatar.jpeg">
+
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 
+1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[arohner/foam](https://github.com/arohner/foam)
+
+Write your UI in cljc!
+
+-----
+
+### In clojure today
+
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 
+1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[tonsky/rum](https://github.com/tonksy/rum)
+
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 
+1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[omcljs/om-next](https://github.com/omcljs/om)
+
+
+blog post: [rendering reagent on the server using hiccup](https://yogthos.net/posts/2015-11-24-Serverside-Reagent.html)
+(if you are using re-frame, tough luck...)
+
+Note:
+re-frame uses a singleton `db` atom. Maybe something can be tried with dynamic
+bindings but it would be seriously nasty.
+
+-----
+
+TODO schema of the code organisation
+
+Note:
+* Views and client-side routing must be in cljc files
+* Clj side: HTTP server + whatever you need
+* Cljs side: client "bootstrap" (mounting react components in the DOM, parsing the data)
+
+
+-----
+
+```
+<html>
+  <head>...</head>
+  <body>
+    <div id="my-app-container">
+      {{{HTML of the app}}}
+    </div>
+
+    <script id="my-app-data" type="application/json">
+      {{{data used to render HTML above, as json}}}
+    </script>
+
+    <script type="text/javascript" src="/js/my-app.js"></script>
+  </body>
+</html>
+
+```
+
+-----
+
+### Pitfall #1
+
+Be mindful of how you inject the data in the html page
+
+```
+<!-- If you do that, it will work at first... -->
+<script type="text/javascript" >
+  window.bootstrapData = {{{data used to render HTML above}}};
+</script>
+
+```
+
+-----
+
+### One day in production...
 
 ![Un beau jour en production](images/shining-JS-fs8.png)
 
@@ -101,166 +209,18 @@ TODO blablabla
 
 ![Le coupable](images/shining-u2028-fs8.png)
 
-
 -----
-## f(x) => (f x)
 
-Pour appeler une fonction, on la met en première position entre parenthèses
+## JS and JSON do not support the same character set...
 
-```
-(+ 1 2)
-;; => 3
+For example `\u2028` and `\u2029` are legal in json, but illegal in a js file or
+script tag...
 
-(+ 1 2 3)
-;; => 6
-
-(inc 1)
-;; => 2
-
-(= 2 (inc 1))
-;; => true
-
-(def ma-hash-map {:a 1})
-(= {:a 1} ma-hash-map)
-;; => true
-```
-
------
-## Langage fonctionnel
-
-```
-(reduce + [1 2 3 4])
-;; => 10
-
-(filter odd? [1 2 3 4])
-;; => [2 4]
-
-(def inc3
-  (comp inc inc inc))
-(inc3 1)
-;; => 4
-
-(def join-and-up
-  (comp upper-case
-        (partial join ", ")))
-
-(join-and-up ["a" "b" "c"])
-;; => "A, B, C"
-
-```
-
------
-## Plein de structures de données!!!
-
-Les classiques {} et []
-
-Les sets : #{1 2 3} => contrainte d'unicité
-
-```
-(conj 2 #{1 2 3})
-;; => #{1 2 3}
-
-(intersection #{1 2} #{2 3})
-;; => #{2}
-```
-
-un peu plus exotiques: sorted-set (comme dans Redis!), sorted-map...
-
------
-## Par défaut, tous les types de données sont...
-<h1 class="fragment">Immutables !!!</h1>
+-> Put the json data in a script tag with a type "application/json"
 
 -----
 
-<img src="images/wtf-cat.jpg" class="no-style"/>
+### Pitfall 2
 
------
-## En pratique
+Make sure you set your character encoding is UTF-8 on the server!
 
-On ne pas transformer une variable sur place :
-
-```
-(def a {:name "Bob" :surname "Dylan"})
-(def b (assoc a :surname "l'éponge"))
-
-;; a => {:name "Bob" :surname "Dylan"}
-;; b => {:name "Bob" :surname "l'éponge}
-
-(= a b)
-;; => false
-
-```
-
------
-## Immutabilité: Pour quoi faire?
-
-```js
-var a = { name: "Bob", surname: "Dylan" };
-var b = _.clone(a);
-
-a === b; // => false
-
-b.surname = "l'éponge";
-
-// différence entre a et b
-???????
-```
-
------
-## En mémoire
-
-
-```clojure
-
-(def a {:surname "Dylan" :name "Bob"})
-
-```
-
-<img src="images/persistent.png" class="no-style">
-
------
-## Structural Sharing
-
-```clojure
-
-(def a {:surname "Dylan" :name "Bob"})
-(def b (assoc a :surname "l'éponge"))
-```
-
-<img src="images/persistent2.png" class="no-style">
-
------
-## Exemple : un article
-
------
-## Rien de nouveau sous le soleil...
-
-
-C'est ce que git utilise pour stocker ses objets
-
-=> calcul du delta entre 2 arbres très rapide!
-
-<img src="images/git-logo-resized.png" class="no-style">
-
-En javascript : ImmutableJs  (par Facebook)
-
-=> entre autre pour accélérer les rendus de React
-
-<img src="images/react-logo-resized.png" class="no-style">
-
------
-## Bonne inter-opérabilité
-
-Accès aux libs Java et JS (pas aussi simple qu'un require, mais ça se fait).
-
-Possibilité de faire des variables mutables si besoin (transient).
-
------
-## En savoir plus
-
-<p> Rich Hickey (Créateur) </p>
-<img src="images/rich-hickey-resized.jpg" class="no-style">
-
-
-<p> David Nolen (Développeur de Clojurescript)</p>
-<img src="images/david-nolen.png" class="no-style">
