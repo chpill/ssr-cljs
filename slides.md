@@ -31,11 +31,10 @@ The back button works in good SPAs!
 
 ### The tradeoffs
 
-First rendering is slow:
-
-download JS -> interpret JS (-> fetch data) -> render
-
 SEO is really tricky for dynamic content
+
+First rendering is slow:  
+download JS -> interpret JS (-> fetch data) -> render
 
 -----
 
@@ -65,8 +64,11 @@ Generated JS payloads get big real fast (even with advanced optimizations and de
 
 ### Extreme case: web front-end of CircleCI
 
+Project stats:  
+26317 lines of cljs  
+277 lines of clj (macros)
 
-Weights a staggering 3.4M of JS (1.02M when gzipped)
+Weighs a staggering **3.4M** of JS (**1.02M** when gzipped)
 
 ![circleci production js request timing](images/circleci-js-payload-firefox-devtools-network-view-fs8.png)
 
@@ -125,7 +127,7 @@ arbitrarly decide when the page is "rendered enough" (default: 300ms)
 Note:
 - Apparently, nashorn is really bad, especially at startup
 - raises complexity of operations
-- you would probably need a pool of nodeJS processes to do that properly
+- Some rails examples were better, with some pool of workers etc
 
 -----
 
@@ -158,6 +160,22 @@ blog post: [rendering reagent on the server using hiccup](https://yogthos.net/po
 Note:
 re-frame uses a singleton `db` atom. Maybe something can be tried with dynamic
 bindings but it would be seriously nasty.
+
+-----
+
+### This works on both the server and the client!
+
+```
+;; my-app.views.example.cljc
+(ns my-app.views.example
+ (:require [rum.core :as rum]))
+
+(rum/defc header [name user-on-twitter]
+  [:header
+   [:p (str "Hello, I am " name)]
+   [:p [:a {:href user-on-twitter} "Follow me on twitter!"]]])
+```
+
 
 -----
 
@@ -215,16 +233,96 @@ Be mindful of how you inject the data in the html page
 
 -----
 
-## JS and JSON do not support the same character set...
+### JS and JSON: not the same character set...
 
-For example `\u2028` and `\u2029` are legal in json, but illegal in a js file or
-script tag...
+For example `\u2028` (line separator) and `\u2029` (paragraph separator) are
+legal in json, but illegal in a js file or script tag...
 
 -> Put the json data in a script tag with a type "application/json"
+```
+<script type="application/json">
+  {{{your app data as hson}}}
+</script>
+```
+
+Note:
 
 -----
 
-### Pitfall 2
+### Pitfall #2
 
-Make sure you set your character encoding is UTF-8 on the server!
+Make sure you use the same character encoding in the html and on your server!
 
+```
+<head>
+  <meta charset="utf-8">
+  ...
+</head>
+```
+
+```
+(-> {:body (server-side-render some-data)}
+    (response/content-type "text/html")
+    (response/charset "UTF-8")
+```
+
+-----
+
+### How to wrap a react lib to get it working on the server
+
+Example: wrapping React FlipMove
+(Assuming you already have your extern file)
+
+-----
+
+First make it work without server-rendering
+
+```
+(ns my-app.views.flip-move
+  (:require [rum.core :as rum]
+             ;; This must match your extern declaration
+            #?(:cljs com.react-flip-move.FlipMove))) 
+
+(rum/defc wrapper [children]
+  #?(:cljs (js/React.createElement js/FlipMove
+                                   children)))
+```
+
+-----
+
+Add some dummy code for the server
+
+```
+(ns my-app.views.flip-move
+  (:require [rum.core :as rum]
+             ;; This must match your extern declaration
+            #?(:cljs com.react-flip-move.FlipMove))) 
+
+(rum/defc wrapper [children]
+  #?(:clj [:div children]
+     :cljs (js/React.createElement js/FlipMove
+                                   children)))
+```
+
+-----
+
+React will yell at you because the server markup does not match its own
+
+![react warning](images/react-warning.png)
+
+-----
+
+```
+(ns my-app.views.flip-move
+  (:require [rum.core :as rum]
+             ;; This must match your extern declaration
+            #?(:cljs com.react-flip-move.FlipMove))) 
+
+(rum/defc wrapper [children]
+  #?(:clj [:div 
+           {:style {:position "relative"}}
+           children]
+     :cljs (js/React.createElement js/FlipMove
+                                   children)))
+
+```
