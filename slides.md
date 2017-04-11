@@ -127,10 +127,10 @@ No need for nodeJS, write your UI in **cljc**!
 [omcljs/om-next](https://github.com/omcljs/om)
 
 
+Note:
 blog post: [rendering reagent on the server using hiccup](https://yogthos.net/posts/2015-11-24-Serverside-Reagent.html)
 (if you are using re-frame, tough luck...)
 
-Note:
 re-frame uses a singleton `db` atom. Maybe something can be tried with dynamic
 bindings but it would be seriously nasty.
 
@@ -158,6 +158,20 @@ bindings but it would be seriously nasty.
 
 -----
 
+### Hard problem to tackle: data fetching
+
+Om next has a big advantage here, as it makes the views declare their data needs.
+
+You will need to find a way to map routes with data needs.
+
+Note:
+GraphQL server now has a clojure implementation!
+On the client side, wrapping apollo or relay might do the trick.
+
+-----
+
+### An abridged index.html
+
 ```
 <html>
   <head>...</head>
@@ -175,6 +189,7 @@ bindings but it would be seriously nasty.
 </html>
 
 ```
+
 
 -----
 
