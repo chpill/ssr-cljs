@@ -3,6 +3,10 @@
 # Server-Side Rendering
 <!-- <img src="images/clojure-logo.png" class="no-style"/> -->
 
+Note:
+- prepare trello board
+- make sure JS is not deactivated on the picsou page
+
 -----
 
 ### Some context: Single page application (SPA)
@@ -67,19 +71,6 @@ Weighs a staggering **3.4M** of JS (**1.02M** when gzipped)
 
 -----
 
-## Progressive web apps?
-
-Targets a much harder problem: the mobile  
--> brings a lot of complexity
-
-Does nothing for the very first render
-
-Note:
-PWA are a way to get some JS code to run "outside" of the context of a web page,
-that can intercept the page requests. It enables you to do caching etc...
-
------
-
 ## Server-side rendering
 
 -----
@@ -99,8 +90,9 @@ Just run your react app on a nodeJS server, easy!
 Can we do that without nodeJS?
 
 Note:
-* First react conf, 30 january 2015
-* Make a demo of reverboard!
+- First react conf, 30 january 2015
+- Make a demo of reverboard!
+- Show the back button!
 
 -----
 
