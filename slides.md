@@ -20,10 +20,10 @@ The back button works in good SPAs!
 
 ### The tradeoffs
 
-SEO is really tricky for dynamic content
-
 First rendering is slow:  
 download JS -> interpret JS (-> fetch data) -> render
+
+SEO is really tricky for dynamic content
 
 -----
 
@@ -80,13 +80,14 @@ that can intercept the page requests. It enables you to do caching etc...
 
 -----
 
-## Server-side rendering (with react)
-### A bit of history
-<!-- <h3 class="fragment">A bit of history</h1> -->
+## Server-side rendering
 
 -----
 
-### The react router mega demo!
+### Pioneered by react
+
+The react router mega demo!
+
 <svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
 [ryanflorence/react-router-mega-demo](https://github.com/ryanflorence/react-router-mega-demo/)
 
@@ -94,7 +95,8 @@ that can intercept the page requests. It enables you to do caching etc...
 [the talk](https://www.youtube.com/watch?v=XZfvW1a8Xac)
 
 Just run your react app on a nodeJS server, easy!
-A web-app with links that work even without JS!
+
+Can we do that without nodeJS?
 
 Note:
 * First react conf, 30 january 2015
@@ -102,25 +104,7 @@ Note:
 
 -----
 
-### In the clojure world
-
-The first attempts were... laborious
-
-<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
-[pupeno/prerenderer](https://github.com/pupeno/prerenderer)
-
-spawns a nodeJS process that runs the SPA
-
-arbitrarly decide when the page is "rendered enough" (default: 300ms)
-
-Note:
-- Apparently, nashorn is really bad, especially at startup
-- raises complexity of operations
-- Some rails examples were better, with some pool of workers etc
-
------
-
-### Then one day at the conj 2015...
+### We can do that on the JVM!
 
 <img width=300 alt="arohner avatar" src="images/arohner-avatar.jpeg">
 
@@ -128,7 +112,7 @@ Note:
 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
 [arohner/foam](https://github.com/arohner/foam)
 
-Write your UI in cljc!
+No need for nodeJS, write your UI in **cljc**!
 
 -----
 
@@ -253,49 +237,13 @@ Make sure you use the same character encoding in the html and on your server!
 
 -----
 
-### How to wrap a react lib to get it working on the server
-
-Example: wrapping React FlipMove
-(Assuming you already have your extern file)
-
------
-
-First make it work without server-rendering
-
-```
-(ns my-app.views.flip-move
-  (:require [rum.core :as rum]
-             ;; This must match your extern declaration
-            #?(:cljs com.react-flip-move.FlipMove))) 
-
-(rum/defc wrapper [children]
-  #?(:cljs (js/React.createElement js/FlipMove
-                                   children)))
-```
-
------
-
-Add a dummy div wrapper on the clojure-side
-
-```
-(ns my-app.views.flip-move
-  (:require [rum.core :as rum]
-             ;; This must match your extern declaration
-            #?(:cljs com.react-flip-move.FlipMove))) 
-
-(rum/defc wrapper [children]
-  #?(:clj [:div children]
-     :cljs (js/React.createElement js/FlipMove
-                                   children)))
-```
-
------
-
-React will yell at you because the server markup does not match its own
+An example of react warning when it cannot reuse markup
 
 ![react warning](images/react-warning.png)
 
 -----
+
+### How to wrap a react lib to get it working on the server
 
 ```
 (ns my-app.views.flip-move
