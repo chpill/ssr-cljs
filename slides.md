@@ -1,11 +1,10 @@
-<!--- .slide data-background="images/clojure-logo.png" -->
-
 # Server-Side Rendering
-<!-- <img src="images/clojure-logo.png" class="no-style"/> -->
 
 Note:
-- prepare trello board
-- make sure JS is not deactivated on the picsou page
+prepare:
+- trello board
+- picsou page full-screen with JS
+- water
 
 -----
 
@@ -77,12 +76,19 @@ Did you know that a map literal with more than 8 keys cannot be DCE?
 
 ![Ouch...](images/SEARCH-ME.png)
 
+Note:
+Cannot even open that on emacs
+
 -----
 
 ### More details about the pitfalls of DCE
 
 <svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
 [binaryage/cljs-devtools issue #37](https://github.com/binaryage/cljs-devtools/issues/37)
+
+Note:
+Some talk about issues in the compiler use of caches
+Mentions protocols, cljs.pprint etc...
 
 -----
 
@@ -111,18 +117,19 @@ The react router mega demo!
 <svg height=60 viewBox="0 25 310 260" style="enable-background:new 0 0 310 310; vertical-align:middle;" xml:space="preserve"> <path d="M297.917,64.645c-11.19-13.302-31.85-18.728-71.306-18.728H83.386c-40.359,0-61.369,5.776-72.517,19.938   C0,79.663,0,100.008,0,128.166v53.669c0,54.551,12.896,82.248,83.386,82.248h143.226c34.216,0,53.176-4.788,65.442-16.527   C304.633,235.518,310,215.863,310,181.835v-53.669C310,98.471,309.159,78.006,297.917,64.645z M199.021,162.41l-65.038,33.991   c-1.454,0.76-3.044,1.137-4.632,1.137c-1.798,0-3.592-0.484-5.181-1.446c-2.992-1.813-4.819-5.056-4.819-8.554v-67.764   c0-3.492,1.822-6.732,4.808-8.546c2.987-1.814,6.702-1.938,9.801-0.328l65.038,33.772c3.309,1.718,5.387,5.134,5.392,8.861   C204.394,157.263,202.325,160.684,199.021,162.41z" style="fill: rgb(0, 0, 0);"></path> </svg>
 [the talk](https://www.youtube.com/watch?v=XZfvW1a8Xac)
 
-Just run your react app on a nodeJS server, easy!
-
 Can we do that without nodeJS?
 
 Note:
 - First react conf, 30 january 2015
-- Make a demo of reverboard!
-- Show the back button!
 
 -----
 
 # DEMO TIME
+
+Note:
+- Make a demo of reverboard!
+- Show the back button!
+- born at the crossroad of need with the passion for over-engineering
 
 -----
 
@@ -135,6 +142,9 @@ Note:
 [arohner/foam](https://github.com/arohner/foam)
 
 No need for nodeJS, write your UI in **cljc**!
+
+Note:
+Previous attempts would do like other languages and launche nodeJS processes
 
 -----
 
@@ -181,7 +191,7 @@ bindings but it would be seriously nasty.
 
 -----
 
-### This works on both the server and the client!
+### views for the server and the client
 
 ```
 ;; my-app.views.example.cljc
@@ -200,6 +210,23 @@ bindings but it would be seriously nasty.
 ### Code organization
 
 ![code organization chart](images/code-organization-chart.png)
+
+
+Note:
+So we now how to deal with the view part. What about the rest
+
+-----
+
+### Routing in cljc
+
+A lot of choice... The one I used:
+
+<svg style="vertical-align: middle" height="60" version="1.1" viewBox="0 0 12 16" width="45"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+[juxt/bidi](https://github.com/juxt/bidi)
+
+Note:
+[DomKM/silk](https://github.com/DomKM/silk)
+
 
 -----
 
